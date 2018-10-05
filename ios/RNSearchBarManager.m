@@ -37,7 +37,7 @@ RCT_EXPORT_MODULE()
 - (UIView *)view
 {
     RNSearchBar *searchBar = [[RNSearchBar alloc] initWithEventDispatcher:self.bridge.eventDispatcher];
-    
+
     return searchBar;
 }
 
@@ -78,6 +78,13 @@ RCT_CUSTOM_VIEW_PROPERTY(cancelButtonText, NSString, RNSearchBar) {
     [view setValue:[RCTConvert NSString:json] forKey:@"_cancelButtonText"];
 }
 
+RCT_CUSTOM_VIEW_PROPERTY(cursorColor, UIColor, RNSearchBar)
+{
+    if([RCTConvert UIColor:json]) {
+      [[UITextField appearanceWhenContainedIn:[UISearchBar class], nil] setTintColor:[RCTConvert UIColor:json]];
+    }
+}
+
 RCT_CUSTOM_VIEW_PROPERTY(editable, BOOL, RNSearchBar)
 {
     if ([RCTConvert BOOL:json]) {
@@ -96,16 +103,16 @@ RCT_CUSTOM_VIEW_PROPERTY(textFieldBackgroundColor, UIColor, RNSearchBar)
         CGSize size = CGSizeMake(34, 34);
         // create context with transparent background
         UIGraphicsBeginImageContextWithOptions(size, NO, 1);
-        
+
         // Add a clip before drawing anything, in the shape of an rounded rect
         [[UIBezierPath bezierPathWithRoundedRect:CGRectMake(0,0, 34, 34)
                                     cornerRadius:5.0] addClip];
         [[RCTConvert UIColor:json]  setFill];
-        
+
         UIRectFill(CGRectMake(0, 0, size.width, size.height));
         UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
         UIGraphicsEndImageContext();
-        
+
         [view setSearchFieldBackgroundImage:image forState:UIControlStateNormal];
         [view setSearchTextPositionAdjustment:UIOffsetMake(8.0, 0.0)];
     }
@@ -131,7 +138,7 @@ RCT_EXPORT_METHOD(blur:(nonnull NSNumber *)reactTag)
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary *viewRegistry){
          RNSearchBar *searchBar = viewRegistry[reactTag];
-         
+
          if ([searchBar isKindOfClass:[RNSearchBar class]]) {
              [searchBar endEditing:true];
          } else {
@@ -145,7 +152,7 @@ RCT_EXPORT_METHOD(focus:(nonnull NSNumber *)reactTag)
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary *viewRegistry){
          RNSearchBar *searchBar = viewRegistry[reactTag];
-         
+
          if ([searchBar isKindOfClass:[RNSearchBar class]]) {
              [searchBar becomeFirstResponder];
          } else {
@@ -159,7 +166,7 @@ RCT_EXPORT_METHOD(unFocus:(nonnull NSNumber *)reactTag)
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary *viewRegistry){
          RNSearchBar *searchBar = viewRegistry[reactTag];
-         
+
          if ([searchBar isKindOfClass:[RNSearchBar class]]) {
              [searchBar resignFirstResponder];
          } else {
@@ -173,7 +180,7 @@ RCT_EXPORT_METHOD(clearText:(nonnull NSNumber *)reactTag)
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary *viewRegistry){
          RNSearchBar *searchBar = viewRegistry[reactTag];
-         
+
          if ([searchBar isKindOfClass:[RNSearchBar class]]) {
              [searchBar setText:@""];
          } else {
